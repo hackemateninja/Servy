@@ -11,7 +11,10 @@ defmodule Servy.Plugins do
   def emojify(%Conv{} = conv), do: conv
 
   def track(%Conv{status: 404, path: path} = conv) do
-    IO.puts("warning #{path} is on the loose!")
+    if Mix.env() != :test do
+      IO.puts("warning #{path} is on the loose!")
+    end
+
     conv
   end
 
@@ -47,10 +50,10 @@ defmodule Servy.Plugins do
 
   def format_response(%Conv{} = conv) do
     """
-    HTTP/1.1 #{Conv.full_status(conv)}
-    Content-Type: text/html
-    Content-Length: #{String.length(conv.resp_body)}
-
+    HTTP/1.1 #{Conv.full_status(conv)}\r
+    Content-Type: text/html\r
+    Content-Length: #{String.length(conv.resp_body)}\r
+    \r
     #{conv.resp_body}
     """
   end

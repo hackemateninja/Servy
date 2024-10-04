@@ -16,7 +16,7 @@ defmodule Servy do
   """
 
   def hello do
-    "Howdy world"
+    :world
   end
 
   def hello(name) do

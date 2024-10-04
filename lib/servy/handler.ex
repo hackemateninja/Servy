@@ -3,7 +3,7 @@ defmodule Servy.Handler do
   Handles http request
   """
   require Logger
-  import Servy.Plugins, only: [rewrite_path: 1, emojify: 1, track: 1, log: 1, format_response: 1]
+  import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1, format_response: 1]
   import Servy.Parser, only: [parse: 1]
   import Servy.HandleFile, only: [read_file: 2]
   alias Servy.{Conv, BearController}
@@ -16,7 +16,6 @@ defmodule Servy.Handler do
     |> rewrite_path
     |> route
     |> log
-    |> emojify
     |> track
     |> format_response
   end
@@ -29,11 +28,11 @@ defmodule Servy.Handler do
     BearController.index(conv)
   end
 
-  def route(%Conv{method: "GET", path: "/bear/" <> id} = conv) do
+  def route(%Conv{method: "GET", path: "/bears/" <> id} = conv) do
     BearController.show(conv, Map.put(conv.params, "id", id))
   end
 
-  def route(%Conv{method: "DELETE", path: "/bear/" <> _id} = conv) do
+  def route(%Conv{method: "DELETE", path: "/bears/" <> _id} = conv) do
     BearController.delete(conv)
   end
 

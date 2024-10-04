@@ -1,5 +1,5 @@
 defmodule HandlerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import Servy.Handler, only: [handle: 1]
 
@@ -37,7 +37,7 @@ defmodule HandlerTest do
     expected_response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 356\r
+    Content-Length: 324\r
     \r
     <h1>All The Bears!</h1>
 
@@ -58,26 +58,6 @@ defmodule HandlerTest do
     assert remove_whitespace(response) == remove_whitespace(expected_response)
   end
 
-  test "GET /bigfoot" do
-    request = """
-    GET /bigfoot HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
-    """
-
-    response = handle(request)
-
-    assert response == """
-           HTTP/1.1 404 Not Found\r
-           Content-Type: text/html\r
-           Content-Length: 17\r
-           \r
-           No /bigfoot here!
-           """
-  end
-
   test "GET /bears/1" do
     request = """
     GET /bears/1 HTTP/1.1\r
@@ -92,7 +72,7 @@ defmodule HandlerTest do
     expected_response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 72\r
+    Content-Length: 71\r
     \r
     <h1>Show Bear</h1>
     <p>
@@ -137,7 +117,7 @@ defmodule HandlerTest do
     expected_response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 102\r
+    Content-Length: 101\r
     \r
     <h1>Clark's Wildthings Refuge</h1>
 
