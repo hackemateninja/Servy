@@ -29,6 +29,21 @@ defmodule Servy do
 
   def my_map([], _fun), do: []
 
+  def deck_cards do
+    ranks =
+      ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
+    suits =
+      ["♣", "♦", "♥", "♠"]
+
+    deck = for rank <- ranks, suit <- suits, do: {rank, suit}
+
+    deck
+    |> Enum.shuffle()
+    |> Enum.chunk_every(13)
+    |> IO.inspect()
+  end
+
   def loopy([head | tail]) do
     IO.puts("Head: #{head * 10 / 200} Tail: #{inspect(tail, charlists: :as_lists)}")
     loopy(tail)
