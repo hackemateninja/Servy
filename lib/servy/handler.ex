@@ -3,10 +3,14 @@ defmodule Servy.Handler do
   Handles http request
   """
   require Logger
-  import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1, format_response: 1]
+
+  import Servy.Plugins,
+    only: [rewrite_path: 1, format_response: 1, put_content_length: 1]
+
   import Servy.Parser, only: [parse: 1]
   import Servy.HandleFile, only: [read_file: 2]
   alias Servy.{Conv, BearController}
+  alias Servy.Api.BearController, as: ApiController
 
   @pages_path Path.expand("pages", File.cwd!())
 
@@ -15,9 +19,26 @@ defmodule Servy.Handler do
     |> parse
     |> rewrite_path
     |> route
-    |> log
-    |> track
+    |> put_content_length
     |> format_response
+  end
+
+  def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
+    time |> String.to_integer() |> :timer.sleep()
+
+    %{conv | status: 200, resp_body: "Awake!"}
+  end
+
+  def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
+    raise "Kaboom!"
+  end
+
+  def route(%Conv{method: "GET", path: "/api/bears"} = conv) do
+    ApiController.index(conv)
+  end
+
+  def route(%Conv{method: "POST", path: "/api/bears", params: params} = conv) do
+    ApiController.create(conv, params)
   end
 
   def route(%Conv{method: "GET", path: "/wildthings"} = conv) do

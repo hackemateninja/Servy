@@ -3,6 +3,7 @@ defmodule Servy.BearController do
   alias Servy.Wildthings
   alias Servy.Conv
   alias Servy.Bear
+  alias Poison
 
   def index(conv) do
     bears =

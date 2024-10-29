@@ -46,15 +46,35 @@ defmodule Servy.Plugins do
     conv
   end
 
-  def log(%Conv{} = conv), do: IO.inspect(conv)
+  def log(%Conv{} = conv) do
+    if Mix.env() != :test do
+      IO.inspect(conv)
+    end
+
+    conv
+  end
+
+  def put_content_length(%Conv{} = conv) do
+    headers = Map.put(conv.resp_headers, "Content-Length", String.length(conv.resp_body))
+
+    %{conv | resp_headers: headers}
+  end
 
   def format_response(%Conv{} = conv) do
     """
     HTTP/1.1 #{Conv.full_status(conv)}\r
-    Content-Type: text/html\r
-    Content-Length: #{String.length(conv.resp_body)}\r
+    #{format_response_headers(conv)}
     \r
     #{conv.resp_body}
     """
+  end
+
+  defp format_response_headers(%Conv{} = conv) do
+    for {key, value} <- conv.resp_headers do
+      "#{key}: #{value}\r"
+    end
+    |> Enum.sort()
+    |> Enum.reverse()
+    |> Enum.join("\n")
   end
 end

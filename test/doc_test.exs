@@ -1,5 +1,5 @@
 defmodule DocTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Parser
   doctest Servy.Handler
   doctest Servy.Plugins
