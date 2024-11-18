@@ -127,8 +127,5 @@ defmodule Servy do
   end
 end
 
-# 23181633/1000000 = 23.181633
-# 2406856/1000000 = 2.406856
-# 2026976/1000000 = 2.026976
 IO.puts(Servy.hello())
 IO.puts(Servy.hello("herman"))

@@ -11,6 +11,7 @@ defmodule Servy.Handler do
   import Servy.HandleFile, only: [read_file: 2]
   alias Servy.{Conv, BearController}
   alias Servy.Api.BearController, as: ApiController
+  alias Servy.VideoCam
 
   @pages_path Path.expand("pages", File.cwd!())
 
@@ -21,6 +22,19 @@ defmodule Servy.Handler do
     |> route
     |> put_content_length
     |> format_response
+  end
+
+  def route(%Conv{method: "GET", path: "/sensors"} = conv) do
+    task = Task.async(fn -> Servy.Tracker.get_location("bigfoot") end)
+
+    snapshots =
+      ["cam-1", "cam-2", "cam-3"]
+      |> Enum.map(&Task.async(fn -> VideoCam.get_snapshot(&1) end))
+      |> Enum.map(&Task.await/1)
+
+    where = Task.await(task)
+
+    %{conv | status: 200, resp_body: inspect({snapshots, where})}
   end
 
   def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
