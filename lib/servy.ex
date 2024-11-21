@@ -125,7 +125,40 @@ defmodule Servy do
     {time, _result} = :timer.tc(fn -> other_triple(Enum.to_list(0..90_000_000)) end)
     IO.puts("Tiempo de ejecucion #{time / 1_000_000}")
   end
+
+  def read_line() do
+    IO.gets("")
+    |> String.trim()
+    |> String.to_integer()
+  end
+
+  def read_list() do
+    IO.stream(:stdio, :line)
+    |> Enum.map(&String.trim/1)
+    |> Enum.map(&String.to_integer/1)
+  end
+
+  def repeat_numbers(number, list) do
+    list
+    |> Enum.flat_map(&List.duplicate(&1, number))
+    |> Enum.each(&IO.puts/1)
+  end
+
+  def print_list(delimiter, list) when delimiter >= 1 and delimiter <= 100 do
+    list
+    |> Enum.filter(fn item -> item >= -100 and item <= 100 and item <= delimiter end)
+    |> Enum.each(&IO.puts/1)
+  end
+
+  def filter_odd_indext() do
+    IO.stream(:stdio, :line)
+    |> Enum.map(&String.trim/1)
+    |> Enum.map(&String.to_integer/1)
+    |> Enum.with_index
+    |> Enum.filter(fn {_value, index} -> rem(index, 2) != 0 end)
+    |> Enum.map(fn {value, _index} -> value end)
+    |> Enum.each(&IO.puts/1)
+  end
 end
 
-IO.puts(Servy.hello())
-IO.puts(Servy.hello("herman"))
+

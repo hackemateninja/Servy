@@ -9,9 +9,8 @@ defmodule Servy.Handler do
 
   import Servy.Parser, only: [parse: 1]
   import Servy.HandleFile, only: [read_file: 2]
-  alias Servy.{Conv, BearController}
+  alias Servy.{Conv, BearController, VideoCam, PledgeController}
   alias Servy.Api.BearController, as: ApiController
-  alias Servy.VideoCam
 
   @pages_path Path.expand("pages", File.cwd!())
 
@@ -24,8 +23,18 @@ defmodule Servy.Handler do
     |> format_response
   end
 
+  def route(%Conv{method: "POST", path: "/pledges"} = conv) do
+    PledgeController.create(conv, conv.params)
+  end
+
+  def route(%Conv{method: "GET", path: "/pledges"} = conv) do
+    PledgeController.index(conv)
+  end
+
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
     task = Task.async(fn -> Servy.Tracker.get_location("bigfoot") end)
+
+    IO.inspect(task)
 
     snapshots =
       ["cam-1", "cam-2", "cam-3"]
