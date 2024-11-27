@@ -37,12 +37,12 @@ defmodule Servy.PledgeServer do
     {:ok, new_state}
   end
 
-  def handle_call(:total_pledged, _from, state) do
+  def handle_call(:total_pledged, _from, %State{} = state) do
     total = Enum.map(state.pledges, &elem(&1, 1)) |> Enum.sum()
     {:reply, total, state}
   end
 
-  def handle_call(:recent_pledges, _from, state) do
+  def handle_call(:recent_pledges, _from, %State{} = state) do
     {:reply, state.pledges, state}
   end
 
@@ -54,14 +54,14 @@ defmodule Servy.PledgeServer do
     {:reply, id, new_state}
   end
 
-  def handle_cast(:clear, state), do: {:noreply, %{state | pledges: []}}
+  def handle_cast(:clear, %State{} = state), do: {:noreply, %{state | pledges: []}}
 
-  def handle_cast({:set_cache_size, size}, state) do
+  def handle_cast({:set_cache_size, size}, %State{} = state) do
     new_state = %{state | cache_size: size}
     {:noreply, new_state}
   end
 
-  def handle_info(message, state) do
+  def handle_info(message, %State{} = state) do
     IO.puts("Can't touch this! #{inspect(message)}")
     {:noreply, state}
   end

@@ -154,11 +154,9 @@ defmodule Servy do
     IO.stream(:stdio, :line)
     |> Enum.map(&String.trim/1)
     |> Enum.map(&String.to_integer/1)
-    |> Enum.with_index
+    |> Enum.with_index()
     |> Enum.filter(fn {_value, index} -> rem(index, 2) != 0 end)
     |> Enum.map(fn {value, _index} -> value end)
     |> Enum.each(&IO.puts/1)
   end
 end
-
-
